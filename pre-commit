@@ -1,0 +1,53 @@
+#! /usr/bin/env python
+# coding=utf-8
+
+import re
+import os
+import sys
+import subprocess
+
+staged_cmd = 'git diff --staged --name-only HEAD'
+
+def pylint_checker():
+    module_re = re.compile('.*?Module demo(.*)Report', re.S)
+    rate_re = re.compile(r"Your code has been rated at ([\d\.]+)/10")
+
+    proc = subprocess.Popen(staged_cmd, shell=True, stdout=subprocess.PIPE)
+    
+    rates = {}
+    with proc.stdout as std_out:
+        for line in std_out.readlines():
+            staged_file = line.strip() # 去除换行符
+            if (staged_file.endswith('.py') and os.path.exists(staged_file)):
+                rates[staged_file] = 0
+                pylint_proc = subprocess.Popen('pylint %s' % staged_file,
+                                                shell=True,
+                                                stdout=subprocess.PIPE)
+    
+                output = pylint_proc.stdout.read()
+    
+                module_match = re.match(module_re, output)
+                if module_match:
+                    print module_match.group(1)
+    
+                rate_match = rate_re.findall(output)
+                if rate_match:
+                    rates[staged_file] = float(rate_re.findall(output)[0])
+
+    failed = False
+    for file_name, rate in rates.items():
+        if rate < 7:
+            print "[FAIL] %s: %.2f/10" % (file_name, rate)
+            failed = True
+    
+    if failed:
+        print 'git commit failed, pylint tests failing'
+        sys.exit(1)
+    else:
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    print '=================== Pylint start ======================='
+    pylint_checker()
+    print '=================== Pylint end ======================='
