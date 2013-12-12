@@ -73,10 +73,10 @@ def is_warning(warning):
         while True:
             input_row = sys.stdin.readline().strip().lower()
 
-            if input_row in ['y', 'yes']:
+            if input_row in ('y', 'yes'):
                 failed = True
                 break
-            elif input_row in ['n', 'no']:
+            elif input_row in ('n', 'no'):
                 failed = False
                 break
             print 'Input y(es) or n(o):'
