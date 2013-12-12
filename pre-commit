@@ -18,8 +18,6 @@ def syntax_checker():
     warning = ''
     pep8_info = ''
 
-    msg_re = re.compile(r"(.*)(unused|never used|import \*\' used; unable)(.*)")
-
     # 获取有改动的文档
     staged_cmd = 'git diff --staged --name-only HEAD'
     proc = subprocess.Popen(staged_cmd, shell=True, stdout=subprocess.PIPE)
