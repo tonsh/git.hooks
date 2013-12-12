@@ -70,6 +70,8 @@ def is_warning(warning):
     if warning:
         print warning
         print "Encounter some non-standard syntax! Do you want to correct them? y(es) or n(o):"
+        # 从终端输入
+        sys.stdin = open('/dev/tty')
         while True:
             input_row = sys.stdin.readline().strip().lower()
 
