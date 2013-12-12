@@ -2,7 +2,6 @@
 # coding=utf-8
 """ 代码提交前实现自动语法检测 """
 
-import re
 import os
 import sys
 import subprocess
@@ -17,8 +16,6 @@ def syntax_checker():
     errors = ''
     warning = ''
     pep8_info = ''
-
-    msg_re = re.compile(r"(.*)(unused|never used|import \*\' used; unable)(.*)")
 
     # 获取有改动的文档
     staged_cmd = 'git diff --staged --name-only HEAD'
@@ -56,7 +53,7 @@ def is_error(errors):
     """ 严重错误，如语法错误等 """
     failed = False
 
-    if len(errors) > 0:
+    if errors:
         failed = True
 
         print "[failed] You cann't commit, repair the errors or run `pyflakes file.py` view details:"
@@ -70,16 +67,16 @@ def is_warning(warning):
     """ 代码规范建议信息 """
     failed = False
 
-    if len(warning) > 0:
+    if warning:
         print warning
         print "Encounter some non-standard syntax! Do you want to correct them? y(es) or n(o):"
         while True:
             input_row = sys.stdin.readline().strip().lower()
 
-            if input_row in ['y', 'yes']:
+            if input_row in ('y', 'yes'):
                 failed = True
                 break
-            elif input_row in ['n', 'no']:
+            elif input_row in ('n', 'no'):
                 failed = False
                 break
             print 'Input y(es) or n(o):'
