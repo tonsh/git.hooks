@@ -56,7 +56,7 @@ def is_error(errors):
     if errors:
         failed = True
 
-        print "[failed] You cann't commit, repair the errors or run `pyflakes file.py` view details:"
+        print "[failed] You cann't commit, repair the errors or run `pyflakes` view details:"
         print "------------------------------"
         print errors
 
