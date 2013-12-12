@@ -67,7 +67,7 @@ def is_warning(warning):
     """ 代码规范建议信息 """
     failed = False
 
-    if len(warning) > 0:
+    if warning:
         print warning
         print "Encounter some non-standard syntax! Do you want to correct them? y(es) or n(o):"
         while True:
