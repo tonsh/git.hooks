@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # coding=utf-8
-""" 代码提交前实现自动语法检测 """
+""" 代码提交前实现自动语法检查 """
 
 import os
 import sys
@@ -8,8 +8,8 @@ import subprocess
 
 
 def syntax_checker():
-    """
-        pyflakes 与 pep8 进行语法与代码风格检查。
+    """ pyflakes 与 pep8 进行语法和代码风格检查。
+
         有严重语法错误时提交会被直接拒绝；
         如果有风格问题，会询问提交人员是否继续进行提交
     """
@@ -24,7 +24,7 @@ def syntax_checker():
         for staged_file in std_out.readlines():
             staged_file = staged_file.strip()
 
-            if not (staged_file.endswith('.py') and os.path.exists(staged_file)):
+            if is_python_file(staged_file):
                 continue
 
             stdout, stderr = process('pyflakes %s' % staged_file)
@@ -38,6 +38,13 @@ def syntax_checker():
     if is_error(errors) or is_warning(warning) or is_warning(pep8_info):
         failed = True
     return failed
+
+
+def is_python_file(filename):
+    if not (filename.endswith('.py') and os.path.exists(filename)):
+        return True
+
+    return False
 
 
 def process(cmd):
@@ -56,8 +63,9 @@ def is_error(errors):
     if errors:
         failed = True
 
-        print "[failed] You cann't commit, repair the errors or run `pyflakes` view details:"
-        print "------------------------------"
+        print ("[failed] You cann't commit, repair the errors "
+               "or run `pyflakes` view details:\n"
+               "------------------------------")
         print errors
 
     return failed
@@ -69,7 +77,8 @@ def is_warning(warning):
 
     if warning:
         print warning
-        print "Encounter some non-standard syntax! Do you want to correct them? y(es) or n(o):"
+        print ("Encounter some non-standard syntax! "
+               "Do you want to correct them? y(es) or n(o):")
         # 从终端输入
         sys.stdin = open('/dev/tty')
         while True:
